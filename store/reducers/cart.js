@@ -12,10 +12,8 @@ export default (state = initialState, action) => {
         case ADD_TO_CART:
             const addedProduct = action.product;
 
-
             const productTitle = addedProduct.name;
             const drinkPrice = addedProduct.price;
-            //console.log(addedProduct.price);
             let updatedOrNewCartItem;
 
             if(state.items[addedProduct.id]){
@@ -25,7 +23,6 @@ export default (state = initialState, action) => {
                     drinkPrice,
                     drinkPrice * (state.items[addedProduct.id].quantity + 1)
                 );
-                console.log(state.items);
                 return{
                     ...state,
                     items: {...state.items, [addedProduct.id]: updatedOrNewCartItem},
@@ -52,16 +49,18 @@ export default (state = initialState, action) => {
 
             case REMOVE_FROM_CART:
                 const selectedCartItem = state.items[action.pid];
-
-
+                console.log(selectedCartItem);
+                console.log(action.pid);
+                console.log(state.items);
+                console.log(state.totalPrice);
                 const currentQty = selectedCartItem.quantity;
                 let updatedCartItems;
                 if (currentQty > 1){
                     const updatedCartItem = new CartItem(
                         selectedCartItem.quantity - 1,
-                        selectedCartItem.drinkPrice,
                         selectedCartItem.productTitle,
-                        selectedCartItem.sum - selectedCartItem.drinkPrice);
+                        selectedCartItem.price,
+                        selectedCartItem.sum - selectedCartItem.price);
                         updatedCartItems = {...state.items, [action.pid]: updatedCartItem}
                 }
                 else{
@@ -71,7 +70,7 @@ export default (state = initialState, action) => {
                 return{
                     ...state,
                     items: updatedCartItems,
-                    totalPrice: state.totalPrice - selectedCartItem.productPrice
+                    totalPrice: state.totalPrice - selectedCartItem.price
                 }
             case ADD_ORDER:
                 return initialState;

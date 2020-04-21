@@ -35,9 +35,10 @@ target 'Project' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
 
-  pod 'RNSquareInAppPayments', :path => '../node_modules/react-native-square-in-app-payments'
 
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+
+
 
   target 'ProjectTests' do
     inherit! :search_paths

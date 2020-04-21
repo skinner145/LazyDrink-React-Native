@@ -1,31 +1,27 @@
-import React, { useEffect } from 'react';
-import { FlatList, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { ListItem } from 'react-native-elements'
-import MainMenuItem from '../../components/shop/MainMenuItem';
-import ProductItem from '../../components/shop/ProuctItem';
-import ProductDetails from '../../screens/menu/ProductDetails';
-import HeaderButton from '../../components/UI/HeaderButton';
-import * as cartActions from '../../store/actions/cart';
+import ListItem from '../../components/UI/ListItem'
 import * as typeActions from '../../store/actions/type';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Feather';
+import Colors from '../../constants/Colors'
+
 const MainMenu = ({navigation}) => {
     const types = useSelector(state => state.type.availableTypes);
     const dispatch = useDispatch();
+    const [isLoaded, setIsLoaded] = useState(false)
+
     useEffect(() => {
-        dispatch(typeActions.getTypes())
+        const loadTypes = async () => {
+          setIsLoaded(false)
+          await dispatch(typeActions.getTypes())
+          setIsLoaded(true)
+        }
+        loadTypes()
     }, [dispatch])
 
-
-
-
-
-
-
-
-    if(types.length > 0){
+    if(isLoaded){
         return (<FlatList
             data={types}
             keyExtractor={item => item.id}
@@ -33,13 +29,17 @@ const MainMenu = ({navigation}) => {
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Menu', {drinkType: item.id})}
                 >
-                    <ListItem title={item.name} bottomDivider chevron />
+                    <ListItem leftMain={item.name} />
                 </TouchableOpacity>
             )}
             />)
     }
     else{
-        return <Text>Hey</Text>
+        return (
+          <View>
+            <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        )
     }
 
 }
@@ -48,22 +48,26 @@ export const screenOptions = navData => {
     return{
         headerTitle: 'Main Menu',
         headerLeft: () => (
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item title="Menu"
-                iconName={'md-menu'}
-                onPress={() => {
-                    navData.navigation.toggleDrawer();
-                }}  />
-            </HeaderButtons>
+          <View flex={1} justifyContent="center" marginLeft={5}  padding={5}>
+            <Icon name="menu"
+            size={30}
+            color="white"
+            marginRight={5}
+            onPress={() => {
+                navData.navigation.toggleDrawer();
+            }}  />
+          </View>
             ),
         headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={HeaderButton}>
-            <Item title="cart"
-            iconName={'md-cart'}
+          <View flex={1} justifyContent="center" marginRight={5}  padding={5}>
+            <Icon name="shopping-cart"
+            size={30}
+            color="white"
+            marginRight={5}
             onPress={() => {
                 navData.navigation.navigate('Cart')
             }}  />
-        </HeaderButtons>
+          </View>
         )
     }
 }

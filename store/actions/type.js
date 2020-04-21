@@ -6,11 +6,11 @@ export const GET_TYPES = 'GET_TYPES';
 export const getTypes = () => {
     return async dispatch => {
         const response = await fetch(
-            'http://192.168.1.14:4000/types'
+            'http://192.168.1.3:4000/types'
         )
         const resData = await response.json();
 
-
+        console.log(resData);
         const loadedTypes = [];
         for (const key in resData){
 

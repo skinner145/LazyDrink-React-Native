@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import Colors from '../../constants/Colors'
 const CartItem = props => {
     let price = props.price;
 
@@ -8,16 +10,20 @@ const CartItem = props => {
     return(
         <View style={styles.cartItem}>
             <View style={styles.itemData}>
-                <Text style={styles.quantity}>{props.quantity} x </Text>
+              <View style={styles.left}>
                 <Text style={styles.mainText}>{props.title}</Text>
+                <Text style={styles.quantity}>Quantity: {props.quantity}</Text>
+              </View>
             </View>
             <View style={styles.itemData}>
-                <Text style={styles.mainText}>€{parsePrice(price)}</Text>
-                {props.deletable &&(
-                <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
-                    <Text>Hey</Text>
-                </TouchableOpacity>
-                )}
+              <View style={styles.right}>
+              <Text style={styles.mainText}>€{parsePrice(price)}</Text>
+              {props.deletable &&(
+              <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
+                  <Icon name="trash-2" size={25} color={Colors.divider}/>
+              </TouchableOpacity>
+              )}
+              </View>
             </View>
         </View>
     )
@@ -31,29 +37,30 @@ const parsePrice = (x) => {
 
 const styles = StyleSheet.create({
     cartItem: {
-        padding: 10,
-        backgroundColor: 'white',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 20
+        width: 230,
+        padding: 5,
     },
     itemData: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     quantity: {
-        fontFamily: 'open-sans',
+        fontFamily: 'Roboto-Thin',
         color: '#888',
-        fontSize: 16
+        fontSize: 14
     },
     mainText: {
-        fontFamily: 'open-sans-bold',
+        fontFamily: 'RobotoCondensed-Regular',
         fontSize: 16
     },
     deleteButton: {
         marginLeft: 20
     },
-
+    right: {
+      alignItems: 'center'
+    }
 });
 
 export default CartItem;

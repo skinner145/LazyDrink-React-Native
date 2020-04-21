@@ -8,18 +8,10 @@
 
 
 import React, { useEffect, useState, useReducer, useCallback } from 'react';
-import { Alert, ActivityIndicator, ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, TouchableOpacity } from 'react-native'
+import { Alert, ActivityIndicator, ScrollView, View, KeyboardAvoidingView, TextInput, StyleSheet, Button, TouchableOpacity, Text } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux';
-import Input from '../../components/UI/Input'
-import Card from'../../components/UI/Card';
 import Colors from '../../constants/Colors';
-import HeaderButton from '../../components/UI/HeaderButton';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import * as authActions from '../../store/actions/auth';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { CommonActions } from '@react-navigation/native';
-
 
 const UPDATE_INPUT = 'UPDATE_INPUT';
 
@@ -63,6 +55,8 @@ const Login =(props) => {
         },
         formIsValid: false
     })
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         if(error){
@@ -72,8 +66,8 @@ const Login =(props) => {
 
     const authHandler = async () => {
         let action = authActions.signin(
-                form.input.email,
-                form.input.password
+                email,
+                password
             )
           setError(null)
         setIsLoading(true);
@@ -103,49 +97,50 @@ const Login =(props) => {
             behavior="padding"
             keyboardVerticalOffset={50}
             >
+            <View style={styles.authContainer}>
+              <Text style={styles.title}>Log in</Text>
+              <Text style={styles.inputHeader}>Email</Text>
+              <View style={styles.inputs}>
+                <TextInput
+                  id="email"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  value={email}
+                  onChangeText={text=>setEmail(text)}
+                />
+                </View>
+                <Text style={styles.inputHeader}>Password</Text>
+                <View style={styles.inputs}>
+                <TextInput
+                  id="password"
+                  autoCapitalize="none"
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={text => setPassword(text)}
+                />
+                </View>
 
-            <Card style={styles.authContainer}>
-                <ScrollView>
-                    <Input
-                        id="email"
-                        label="Email"
-                        keyboardType="email-address"
-                        required
-                        autoCapitalize="none"
-                        errorMessage="Email invalid"
-                        onInputChange={inputChangeHandler}
-                        initialValue=""
-                    />
-                    <Input
-                        id="password"
-                        label="Password"
-                        keyboardType="default"
-                        secureTextEntry
-                        required
-                        minLegth={6}
-                        autoCapitalize="none"
-                        errorMessage="Password invalid"
-                        onInputChange={inputChangeHandler}
-                        initialValue=""
-                    />{isLoading ? (
+                {isLoading ? (
                         <ActivityIndicator size="small" color={Colors.secondary} />
-                    ):(
+                    ):(<View style={styles.button}>
                         <Button
                         title='Login'
                         color={Colors.secondary}
                         onPress={authHandler}
                     />
-
+                    </View>
                     )}
+                    <View style={styles.button}>
+                    <Text style={styles.inputHeader}>Don't have an account?</Text>
                     <Button
-                        title='Switch to Register'
+                        title='Register Account'
                         color={Colors.primary}
                         onPress={() => {
                             props.setIsSignUp(true)
                         }}
                     />
-                </ScrollView>
-            </Card>
+                  </View>
+                </View>
         </View>
 
     )
@@ -155,19 +150,36 @@ const Login =(props) => {
 
 const styles = StyleSheet.create({
     screen: {
-        height: '80%'
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: -35
     },
     authContainer: {
         width: '80%',
         maxWidth: 400,
         maxHeight: 400,
-        padding: 20
+        padding: 20,
     },
-    gradients: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center'
+    inputs: {
+      borderTopRightRadius: 20,
+      borderBottomRightRadius: 2,
+      borderTopLeftRadius: 2,
+      borderBottomLeftRadius: 20,
+      borderColor: Colors.secondary,
+      borderWidth: 1,
+      height: 50
+    },
+    button: {
+      padding: 10
+    },
+    title: {
+      fontSize: 30,
+      fontFamily: 'RobotoCondensed-Regular'
+    },
+    inputHeader: {
+      fontFamily: 'RobotoCondensed-Regular'
     }
 })
 

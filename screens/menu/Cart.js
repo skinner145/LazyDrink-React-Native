@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, FlatList, StyleSheet, Button, Picker, Modal } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button, Picker, Modal, ScrollView } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
@@ -9,6 +9,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 //import ListTables from '../../components/shop/ListTables';
 import { test } from '../payment/Payment'
 import SyncStorage from 'sync-storage';
+import Icon from 'react-native-vector-icons/Feather'
 
 const Cart = ({navigation}) => {
     const dispatch = useDispatch();
@@ -40,110 +41,111 @@ const Cart = ({navigation}) => {
     });
 return(
     <View style={styles.screen}>
-        <View style={styles.summary} >
-            <Button
-                title="Proceed to Checkout"
-                color={Colors.secondary}
-                disabled={cartItems.length === 0}
-                onPress={() => {
-                  dispatch(ordersActions.storeOrder(cartItems, table, totalPrice))
-                  navigation.navigate('Payment')
-                }}
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Your Order</Text>
+        </View>
+        <Text>Select a table</Text>
+        <View style={styles.table}>
+              <Picker selectedValue={table}
+                  onValueChange={(itemValue) => {
+                      setTable(itemValue)
+                  }}
+              >
+                  {tables.map(table => {
+                      return (
+                      <Picker.Item
+                          key={table}
+                          value={table}
+                          label={table.toString()}
+                          />
+                      )
+                  })}
+              </Picker>
+            </View>
+        <View style={styles.itemList}>
+          <FlatList
+              data={cartItems}
+              keyExtractor={item => item.productId}
+              renderItem={itemData => (
+                <View style={styles.list}>
+                <CartItem
+                  title={itemData.item.productTitle}
+                  quantity={itemData.item.quantity}
+                  price={itemData.item.price}
+                  deletable
+                  onRemove={() => {
+                      dispatch(cartActions.removeFromCart(itemData.item.productId))
+                  }}
                 />
+                </View>
+              )
+                } />
+
         </View>
-        <View>
-        <Picker selectedValue={table}
-            onValueChange={(itemValue) => {
-                setTable(itemValue)
-            }}
-        >
-            {tables.map(table => {
-                return (
-                <Picker.Item
-                    key={table}
-                    value={table}
-                    label={table.toString()}
-                    />
-                )
-            })}
-        </Picker>
+        <View style={styles.footer}>
+          <Text style={styles.price}>Total: ${cartTotalPrice.toFixed(2)}</Text>
+          <Button
+              style={styles.button}
+              title="Pay By Card"
+              color={Colors.secondary}
+              disabled={cartItems.length === 0}
+              onPress={() => {
+                dispatch(ordersActions.storeOrder(cartItems, table, totalPrice))
+                navigation.navigate('Payment')
+              }}
+              />
         </View>
-        <View>
-            <FlatList
-            data={cartItems}
-            keyExtractor={item => item.productId}
-            renderItem={itemData =>
-            <CartItem
-            title={itemData.item.productTitle}
-            quantity={itemData.item.quantity}
-            price={itemData.item.price}
-            deletable
-            onRemove={() => {
-                dispatch(cartActions.removeFromCart(itemData.item.productId))
-            }}
-            />
-            } />
-        </View>
-        <View>
-        <Text>Total:€ {cartTotalPrice.toFixed(2)}</Text>
-        </View>
-        <Modal
-          animationType="slide"
-          visible={modalVisible}
-        >
-          <Text>hi</Text>
-        </Modal>
+      </View>
     </View>
 )
 }
-// const ListTables = props => {
-//     const dispatch = useDispatch();
-//     const tables = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]
-//     const [table, setTable] = useState(1);
-//     return(
-        // <Picker selectedValue={table}
-        //     onValueChange={(itemValue) => {
-        //         setTable(itemValue)
-        //     }}
-        // >
-        //     {tables.map(table => {
-        //         return (
-        //         <Picker.Item
-        //             key={table}
-        //             value={table}
-        //             label={table.toString()}
-        //             />
-        //         )
-        //     })}
-        // </Picker>
-//     )
-// }
 
 export const screenOptions = {
     headerTitle: 'Cart'
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        margin: 20
-    },
-    summary: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-        padding: 10,
-        elevation: 5,
-        borderRadius: 10,
-        backgroundColor: 'white'
-    },
-    text:{
-        fontFamily: 'open-sans-bold',
-        fontSize: 18
-    },
-    amount:{
-        color: Colors.secondary
-    }
+  screen: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  container: {
+    borderWidth: 1,
+    borderColor: Colors.divider,
+    width: '75%',
+    borderRadius: 10,
+    padding: 15,
+    maxHeight: 500
+  },
+  table: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: Colors.divider,
+    marginBottom: 10
+  },
+  itemList: {
+    maxHeight: 300,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: Colors.divider
+  },
+  list: {
+    borderWidth: 1,
+    borderColor: Colors.divider
+  },
+  footer: {
+    marginTop: 10
+  },
+  title: {
+    fontFamily: 'RobotoCondensed-Regular',
+    fontSize: 24
+  },
+  price: {
+    fontFamily: 'RobotoCondensed-Regular',
+    fontSize: 18
+  }
 });
 
 export default Cart;

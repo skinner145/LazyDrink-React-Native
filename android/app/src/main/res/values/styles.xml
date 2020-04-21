@@ -3,7 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="android:textColor">#000000</item>
+        <item name="android:textColor">#333333</item>
     </style>
-
+    <style name="sqip.Theme.CardEntry" parent="sqip.Theme.BaseCardEntry">
+      <item name="colorPrimary">#9c4bd1</item>
+      <item name="colorPrimaryDark">#9c4bd1</item>
+      <item name="sqipSaveButtonText">@string/Pay</item>
+      <item name="sqipActivityTitle">@string/CustomText</item>
+      <item name="colorAccent">#333333</item>
+    </style>
+    <string name="Pay" parent="sqip.Theme.CardEntry">Pay</string>
+    <string name="CustomText" parent="sqip.Theme.CardEntry">Card</string>
 </resources>

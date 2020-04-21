@@ -4,19 +4,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import { Platform } from 'react-native';
 
-import { View, Button } from 'react-native'
+import { View, Button, Text } from 'react-native'
 import MainMenu, {screenOptions as mainMenuScreenOptions} from '../screens/menu/MainMenu';
 import Menu, { screenOptions as menuScreenOptions } from '../screens/menu/Menu';
-import ProductDetails, { screenOptions as productDetailsScreenOptions } from '../screens/menu/ProductDetails';
 import Colors from '../constants/Colors';
 import Cart, { screenOptions as cartScreenOptions, screenOptions} from '../screens/menu/Cart';
 import Orders, {screenOptions as ordersScreenOptions} from '../screens/menu/Orders';
-import OrderDetails from '../screens/menu/OrderDetails';
+import OrderDetails, {screenOptions as orderDetailsScreenOptions} from '../screens/menu/OrderDetails';
 import Payment from '../screens/payment/Payment';
 import AuthScreen, {screenOptions as authScreenOptions} from '../screens/auth/AuthScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as authActions from '../store/actions/auth';
 import { useDispatch } from 'react-redux'
+import Icon from 'react-native-vector-icons/Feather';
 
 
 const defaultNavOptions = {
@@ -47,11 +47,6 @@ export const ProductsNavigator = () => {
                 options={menuScreenOptions}
                 />
             <ProductsStackNavigator.Screen
-                name ="ProductDetails"
-                component={ProductDetails}
-                options={productDetailsScreenOptions}
-                />
-            <ProductsStackNavigator.Screen
                 name="Cart"
                 component={Cart}
                 options={cartScreenOptions}
@@ -76,6 +71,7 @@ export const OrdersNavigator = () => {
               <OrdersStackNavigator.Screen
                 name="OrderDetails"
                 component={OrderDetails}
+                options={orderDetailsScreenOptions}
               />
         </OrdersStackNavigator.Navigator>
     )
@@ -116,28 +112,23 @@ export const ShopNavigator = () => {
         }}
         >
             <ShopDrawerNavigator.Screen
-                name="Products"
+                name="Menu"
                 component={ProductsNavigator}
-
-                />
-            <ShopDrawerNavigator.Screen
-                name="Orders"
-                component={OrdersNavigator}
-                navigationOptions={{
+                options={{
                     drawerIcon: props => (
-                        <Ionicons
-                            name={'md-cart'}
+                        <Icon
+                            name='list'
                         />
                     )
                 }}
                 />
             <ShopDrawerNavigator.Screen
-                name="Auth"
-                component={AuthNavigator}
-                navigationOptions={{
+                name="Orders"
+                component={OrdersNavigator}
+                options={{
                     drawerIcon: props => (
-                        <Ionicons
-                            name={'md-cart'}
+                        <Icon
+                            name='clock'
                         />
                     )
                 }}

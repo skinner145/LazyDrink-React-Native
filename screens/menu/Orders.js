@@ -1,15 +1,11 @@
-import React, { useEffect } from 'react';
-import { FlatList, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, View, ActivityIndicator,TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import HeaderButton from '../../components/UI/HeaderButton';
-import OrderItem from '../../components/shop/OrderItem';
 import * as ordersActions from '../../store/actions/orders'
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ListItem } from 'react-native-elements'
+import ListItem from '../../components/UI/ListItem';
+import Icon from 'react-native-vector-icons/Feather';
 import moment from 'moment'
+import Colors from '../../constants/Colors'
 
 const Orders = ({navigation}) => {
   // console.log(this.props.navigation.state.params.success);
@@ -18,18 +14,23 @@ const Orders = ({navigation}) => {
   })
 
 
-
+const [isLoaded, setIsLoaded] = useState(false)
 
   const dispatch = useDispatch();
-  useEffect(() => console.log('updating'))
   useEffect(() => {
-      dispatch(ordersActions.getOrder(userId))
-  }, [])
+      const loadOrders = async () => {
+        setIsLoaded(false)
+        await dispatch(ordersActions.getOrder(userId))
+        setIsLoaded(true)
+      }
+      loadOrders();
+  }, [dispatch])
   //
   let orders = useSelector(state => {
     return state.orders.orders
   })
 
+  if(isLoaded){
     return (
       <FlatList
         data={orders}
@@ -39,43 +40,38 @@ const Orders = ({navigation}) => {
             onPress={() => {navigation.navigate('OrderDetails', {order: item})}}
           >
             <ListItem
-              title={'Order #' + item.number}
-              subtitle={'Table: ' + item.tableNumber}
-              rightTitle={'$' + item.totalPrice.toFixed(2)}
-              rightSubtitle={moment(item.date).format('HH:mm, DD/MM')}
-              bottomDivider
-              chevron />
+              leftMain={'Order #' + item.number}
+              rightMain={item.totalPrice}
+              leftSub={moment(item.date).format('HH:mm, DD/MM')}
+              rightSub={item.tableNumber}
+              />
           </TouchableOpacity>
         )}
       />
     )
-
-
-    // return (
-    // <FlatList
-    //     data={orders}
-    //     keyExtractor={item => item.id}
-    //     renderItem={itemData =>
-    //     <OrderItem
-    //         price={itemData.item.price}
-    //         date={itemData.item.readableDate}
-    //         items={itemData.item.items}
-    //     />
-    //     }
-    // />)
+  }
+  else{
+    return(
+      <View flex={1} alignItems="center" justifyContent="center">
+        <ActivityIndicator size="large"  color={Colors.primary}/>
+      </View>
+    )
+  }
 }
 
 export const screenOptions = navData => {
     return {
         headerTitle: 'Orders',
         headerLeft: () => (
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item title="Menu"
-                iconName={'md-menu'}
-                onPress={() => {
-                    navData.navigation.toggleDrawer();
-                }}  />
-            </HeaderButtons>
+          <View flex={1} justifyContent="center" marginLeft={5} padding={5}>
+            <Icon name="menu"
+            size={30}
+            color="white"
+            marginRight={5}
+            onPress={() => {
+                navData.navigation.toggleDrawer()
+            }}  />
+          </View>
         )
     }
 };

@@ -6,7 +6,7 @@ export const GET_DRINKS = 'GET_DRINKS';
 export const getDrinks = (drinkId) => {
     return async dispatch => {
         const response = await fetch(
-            'http://192.168.1.14:4000/drinks'
+            'http://192.168.1.3:4000/drinks'
         )
         const resData = await response.json();
         const loadedDrinks = [];

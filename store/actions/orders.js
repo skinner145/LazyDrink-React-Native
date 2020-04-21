@@ -42,7 +42,7 @@ export const addOrder = (order, userId) => {
         sum: order.drinks[key].sum
       })
     }
-      axios.post('http://192.168.1.14:4000/orders', newOrder)
+      axios.post('http://192.168.1.3:4000/orders', newOrder)
       .then(res => {
         console.log(res.data);
       })
@@ -55,7 +55,7 @@ export const getOrder = (userId) => {
     let orders = []
     let loadedOrders = []
     return async dispatch => {
-        const response = await fetch('http://192.168.1.14:4000/orders')
+        const response = await fetch('http://192.168.1.3:4000/orders')
         const resData = await response.json();
 
         for(const key in resData){

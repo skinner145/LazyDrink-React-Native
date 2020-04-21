@@ -1,5 +1,5 @@
-import React, { Component, useCallback } from 'react';
-import { View, Button } from 'react-native'
+import React from 'react';
+import { View } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux';
 import {
   SQIPCore,
@@ -8,10 +8,7 @@ import {
 } from 'react-native-square-in-app-payments';
 import chargeCardNonce from '../../charge/ChargeCard';
 import { Alert } from 'react-native'
-import SyncStorage from 'sync-storage';
-import * as ordersActions from '../../store/actions/orders'
-import * as navigationActions from '../../store/actions/navigation';
-import addOrder from './paymentComplete';
+import * as ordersActions from '../../store/actions/orders';
 
 
 
@@ -38,9 +35,12 @@ const Payment = ({navigation}) => {
 
   let onCardEntryComplete = () => {
     dispatch(ordersActions.addOrder(order, userId))
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Orders' }]
+    })
+
     Alert.alert('Order successful');
-    navigation.navigate('MainMenu')
-    // navigation.navigate('Orders')
 
   }
 
@@ -77,35 +77,9 @@ const Payment = ({navigation}) => {
     return (
 
       <View>
-        <Button
-          onPress={() => {onStartCardEntry()}}
-          title="Start Card Entry"
-        />
+        {onStartCardEntry()}
       </View>
     );
 }
-
-
-// export const OnCardEntryComplete = () => {
-//   // console.log(cardcom);
-// //   return(// Update UI to notify user that the payment flow is completed
-//   const dispatch = useDispatch()
-// //   dispatch(navigationActions.navigate('Orders'))
-// // )
-//   // this.props.navigation.navigate('Orders', {success: true});
-//   }
-
-
-
-
-  /**
-   * Callback when card entry is cancelled and UI is closed
-   */
-
-
-  /**
-   * An event listener to start card entry flow
-   */
-
 
 export default Payment;

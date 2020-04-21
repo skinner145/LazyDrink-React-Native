@@ -1,11 +1,14 @@
+/**
+ * @Author: Arthur Skinner
+ * @Date:   2020-03-06T16:42:53+00:00
+ * @Last modified by:   Arthur Skinner
+ * @Last modified time: 2020-03-10T19:56:00+00:00
+ */
+
 import React, { useEffect, useState, useReducer, useCallback } from 'react';
-import { Alert, ActivityIndicator, ScrollView, View, KeyboardAvoidingView, StyleSheet, Button } from 'react-native'
+import { Alert, ActivityIndicator, ScrollView, View, KeyboardAvoidingView, StyleSheet, Button, Text, TextInput } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux';
-import Input from '../../components/UI/Input'
-import Card from'../../components/UI/Card';
 import Colors from '../../constants/Colors';
-import HeaderButton from '../../components/UI/HeaderButton';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import * as authActions from '../../store/actions/auth';
 
 const UPDATE_INPUT = 'UPDATE_INPUT';
@@ -54,6 +57,10 @@ const Register = props => {
         },
         formIsValid: false
     })
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
     useEffect(() => {
         if(error){
@@ -63,10 +70,10 @@ const Register = props => {
 
     const authHandler = async () => {
         let action = authActions.signup(
-                form.input.firstName,
-                form.input.lastName,
-                form.input.email,
-                form.input.password
+                firstName,
+                lastName,
+                email,
+                password
             )
             setError(null)
         setIsLoading(true);
@@ -97,88 +104,107 @@ const Register = props => {
             keyboardVerticalOffset={50}
             >
 
-            <Card style={styles.authContainer}>
-                <ScrollView>
-                    <Input
-                        id="firstName"
-                        label="First Name"
-                        keyboardType="default"
-                        required
-                        errorMessage="default"
-                        onInputChange={inputChangeHandler}
-                        initialValue=""
-                    />
-                    <Input
-                        id="lastName"
-                        label="Last Name"
-                        keyboardType="default"
-                        required
-                        errorMessage="Email invalid"
-                        onInputChange={inputChangeHandler}
-                        initialValue=""
-                    />
-                    <Input
-                        id="email"
-                        label="Email"
-                        keyboardType="email-address"
-                        required
-                        autoCapitalize="none"
-                        errorMessage="Email invalid"
-                        onInputChange={inputChangeHandler}
-                        initialValue=""
-                    />
-                    <Input
-                        id="password"
-                        label="Password"
-                        keyboardType="default"
-                        secureTextEntry
-                        required
-                        minLegth={6}
-                        autoCapitalize="none"
-                        errorMessage="Password invalid"
-                        onInputChange={inputChangeHandler}
-                        initialValue=""
-                    />{isLoading ? (
+              <View style={styles.authContainer}>
+              <Text style={styles.title}>Register</Text>
+              <ScrollView>
+                  <Text style={styles.inputHeader}>First Name</Text>
+                  <View style={styles.inputs}>
+                    <TextInput
+                      id="firstName"
+                      value={firstName}
+                      onChangeText={text => setFirstName(text)}
+                     />
+                  </View>
+                  <Text style={styles.inputHeader}>Last Name</Text>
+                  <View style={styles.inputs}>
+                    <TextInput
+                      id="lastName"
+                      value={lastName}
+                      onChangeText={text => setLastName(text)}
+                     />
+                  </View>
+                  <Text style={styles.inputHeader}>Email</Text>
+                  <View style={styles.inputs}>
+                    <TextInput
+                      id="email"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      value={email}
+                      onChangeText={text => setEmail(text)}
+                     />
+                  </View>
+                  <Text style={styles.inputHeader}>Password</Text>
+                  <View style={styles.inputs}>
+                    <TextInput
+                      id="password"
+                      autoCapitalize="none"
+                      secureTextEntry={true}
+                      value={password}
+                      onChangeText={text => setPassword(text)}
+                     />
+                  </View>
+                  {isLoading ? (
                         <ActivityIndicator size="small" color={Colors.secondary} />
-                    ):(
+                    ):(<View style={styles.button}>
                         <Button
                         title='Register'
                         color={Colors.secondary}
                         onPress={authHandler}
-                    />
+                    /></View>
                     )}
+                    <View style={styles.button}>
+                    <Text style={styles.inputHeader}>Already have an account?</Text>
                     <Button
-                        title='Switch to Login'
+                        title='Login Here'
                         color={Colors.primary}
                         onPress={() => {
                             props.setIsSignUp(false)
                         }}
                     />
+                  </View>
+                  </ScrollView>
+              </View>
 
-                </ScrollView>
-            </Card>
         </View>
 
     )
 }
 
-
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-    },
-    authContainer: {
-        width: '80%',
-        maxWidth: 400,
-        maxHeight: 400,
-        padding: 20
-    },
-    gradients: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
+  screen: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -35
+  },
+  authContainer: {
+    width: '80%',
+    maxWidth: 400,
+    maxHeight: 500,
+    padding: 20,
+  },
+  inputs: {
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 2,
+    borderTopLeftRadius: 2,
+    borderBottomLeftRadius: 20,
+    borderColor: Colors.secondary,
+    borderWidth: 1,
+    height: 40,
+    paddingLeft: 5
+  },
+  button: {
+    padding: 10
+  },
+  title:{
+    fontSize: 30,
+    fontFamily: 'RobotoCondensed-Regular'
+  },
+  inputHeader: {
+    fontFamily: 'RobotoCondensed-Regular'
+  }
 })
+
 
 export default Register;

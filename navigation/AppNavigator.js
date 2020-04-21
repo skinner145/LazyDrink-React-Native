@@ -17,7 +17,6 @@ import { ShopNavigator, AuthNavigator } from './ShopNavigator';
 
 
 const AppNavigator = props => {
-  // let is = useSelector(state => state.auth.token)
 const isAuth = useSelector(state => !!state.auth.token);
 
     return (

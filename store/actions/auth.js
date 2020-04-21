@@ -31,7 +31,7 @@ export const signup = (firstName, lastName, email, password) => {
             password: password
         }
 
-        const response = await axios.post('http://192.168.1.14:4000/user/register', user)
+        const response = await axios.post('http://192.168.1.3:4000/user/register', user)
         // .then(console.log('User added succesfully'))
         // .catch(err => console.log(err))
         console.log(response.data.success);
@@ -55,7 +55,8 @@ export const signin = (email, password) => {
             email: email,
             password: password
         }
-        const response = await axios.post('http://192.168.1.14:4000/user/login', user)
+
+        const response = await axios.post('http://192.168.1.3:4000/user/login', user)
         // .then(console.log('User added succesfully'))
         // .catch(err => console.log(err))
         console.log(response.data.success);
